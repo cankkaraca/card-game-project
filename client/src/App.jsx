@@ -6,7 +6,7 @@ import { User, Users, Trophy, Play, Plus, Check, FastForward, Clock, Volume2, Vo
 import './App.css';
 
 // ŞİMDİLİK LOCALHOST, İLERİDE BURAYA LİNK YAPIŞTIRACAĞIZ:
-const SERVER_URL = "http://localhost:3001"; 
+const SERVER_URL = "https://kart-oyunu-sunucu.onrender.com"; 
 
 const socket = io.connect(SERVER_URL);
 
