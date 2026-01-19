@@ -21,12 +21,6 @@ const io = new Server(server, {
 // ... (Buradaki 'let rooms = {}' ve diğer oyun kodları AYNEN KALSIN) ...
 
 // EN ALTTA: Port Ayarı
-// DÜZELTME 2: Sunucunun verdiği portu kullan, yoksa 3001'i kullan.
-const PORT = process.env.PORT || 3001; 
-
-server.listen(PORT, () => {
-  console.log(`✅ OYUN MOTORU HAZIR: Port ${PORT}`);
-});
 
 function shuffle(array) {
   let currentIndex = array.length, randomIndex;
@@ -358,6 +352,8 @@ io.on('connection', (socket) => {
   socket.on("disconnect", () => { const player = Object.values(rooms).flatMap(r => r.players).find(p => p.id === socket.id); if (player) player.isOnline = false; });
 });
 
-server.listen(3001, () => {
-  console.log(`✅ OYUN MOTORU HAZIR: http://localhost:3001`);
+const PORT = process.env.PORT || 3001;
+
+server.listen(PORT, () => {
+  console.log(`✅ OYUN MOTORU HAZIR: Port ${PORT}`);
 });
