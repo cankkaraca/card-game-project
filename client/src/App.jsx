@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Confetti from 'react-confetti';
-import { User, Users, Trophy, Play, Plus, Check, FastForward, Clock, Volume2, VolumeX, Settings, X, Trash2, Crown, Bot } from 'lucide-react';
+import { Users, Trophy, Play, Plus, Check, FastForward, Clock, Volume2, VolumeX, Settings, X, Trash2, Crown, Bot } from 'lucide-react';
 import './App.css';
 
-// ŞİMDİLİK LOCALHOST, İLERİDE BURAYA LİNK YAPIŞTIRACAĞIZ:
-const SERVER_URL = "https://kart-oyunu-sunucu.onrender.com"; 
+// ⚠️ CANLIYA GEÇERKEN BURAYI DEĞİŞTİR:
+ const SERVER_URL = "https://kart-oyunu-sunucu.onrender.com";
+//const SERVER_URL = "http://localhost:3001";
 
-const socket = io.connect(SERVER_URL);
-
+const socket = io(SERVER_URL, {
+  transports: ["websocket"],
+});
 
 const AVATARS = [
   "https://api.dicebear.com/7.x/adventurer/svg?seed=Felix",
@@ -20,7 +22,6 @@ const AVATARS = [
   "https://api.dicebear.com/7.x/micah/svg?seed=Cookie",
   "https://api.dicebear.com/7.x/pixel-art/svg?seed=Milo",
   "https://api.dicebear.com/7.x/lorelei/svg?seed=Sasha",
-  "https://api.dicebear.com/7.x/notionists/svg?seed=Leo",
   "https://api.dicebear.com/7.x/open-peeps/svg?seed=Sam"
 ];
 
@@ -49,7 +50,7 @@ const Whistle = ({ size = 24, color = "currentColor" }) => (
 );
 
 // --- AYARLAR MODALI ---
-const SettingsModal = ({ onClose, room, userList, currentMaxScore, currentDuration }) => {
+const SettingsModal = ({ onClose, room, userList, currentMaxScore, currentDuration, myUsername }) => {
     const [score, setScore] = useState(currentMaxScore || 5);
     const [duration, setDuration] = useState((currentDuration || 30000) / 1000);
 
@@ -88,10 +89,11 @@ const SettingsModal = ({ onClose, room, userList, currentMaxScore, currentDurati
                         <div key={p.username} className="manage-item">
                             <span style={{display: 'flex', alignItems: 'center', gap: 5}}>
                                 {p.username}
-                                {p.isAdmin && <Crown size={14} color="red" fill="red" />}
+                                {p.isAdmin && <Crown size={14} color="gold" fill="gold" />}
                                 {p.isBot && <Bot size={14} color="#60a5fa" />}
+                                {p.username === myUsername && <span style={{fontSize:'0.7em', color:'#666'}}>(Sen)</span>}
                             </span>
-                            {!p.isAdmin && (
+                            {p.username !== myUsername && (
                                 <button className="kick-btn" onClick={() => handleKick(p.username)}>
                                     <Trash2 size={16} /> AT
                                 </button>
@@ -106,7 +108,7 @@ const SettingsModal = ({ onClose, room, userList, currentMaxScore, currentDurati
     );
 };
 
-// --- AKILLI SAYAÇ ---
+// --- SAYAÇ ---
 const TimerDisplay = ({ timerEnd, soundEnabled }) => {
     const [timeLeft, setTimeLeft] = useState(0);
     const lastTickRef = useRef(0);
@@ -115,7 +117,6 @@ const TimerDisplay = ({ timerEnd, soundEnabled }) => {
     useEffect(() => {
         if (!timerEnd) { 
             setTimeLeft(0); 
-            tickAudioRef.current.pause(); 
             return; 
         }
 
@@ -133,34 +134,35 @@ const TimerDisplay = ({ timerEnd, soundEnabled }) => {
             }
 
             if (diff <= 0) {
-                tickAudioRef.current.pause();
-                tickAudioRef.current.currentTime = 0;
                 clearInterval(interval);
             }
 
             setTimeLeft(diff);
         }, 500);
 
-        return () => {
-            clearInterval(interval);
-            tickAudioRef.current.pause();
-            tickAudioRef.current.currentTime = 0;
-        };
+        return () => clearInterval(interval);
     }, [timerEnd, soundEnabled]);
 
     if (!timerEnd || timeLeft <= 0) return null;
     const color = timeLeft <= 10 ? '#ef4444' : '#fcd34d';
     
     return (
-        <motion.div animate={timeLeft <= 10 ? { scale: [1, 1.1, 1] } : {}} transition={{ repeat: Infinity, duration: 1 }} className="timer-box" style={{ borderColor: color }}>
-            <Clock size={20} color={color} />
-            <span style={{ color: color, fontSize: '1.2rem', fontWeight: 'bold' }}>{timeLeft} sn</span>
+        <motion.div 
+            initial={{ y: -100 }} animate={{ y: 0 }}
+            className="timer-badge" 
+            style={{ borderColor: color, color: color }}
+        >
+            <Clock size={20} />
+            <span style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>{timeLeft}</span>
         </motion.div>
     );
 };
 
 const GameTable = ({ players, myUsername, tableCards, gameState, onPickWinner, onRevealCard, amICzar, mySocketId, playSoundFunc }) => {
   const TABLE_SIZE = 600; const RADIUS = 240; const CENTER = TABLE_SIZE / 2;
+
+  // DÜZELTME: Tüm kartların açık olup olmadığını kontrol et
+  const allCardsRevealed = tableCards.length > 0 && tableCards.every(group => group.revealed);
 
   return (
     <div className="table-wrapper">
@@ -178,8 +180,17 @@ const GameTable = ({ players, myUsername, tableCards, gameState, onPickWinner, o
         const isMe = player.username === myUsername;
         return (
           <motion.div key={index} initial={{ scale: 0 }} animate={{ scale: 1 }} className="player-seat" style={{ left: pos.x, top: pos.y }}>
-            <div className={`avatar-frame ${isMe ? 'me' : ''} ${player.isCzar ? 'czar-frame' : ''}`}><img src={player.avatar || AVATARS[0]} alt="avatar" />{player.hasPlayed && gameState === 'PLAYING' && <div className="ready-indicator"><Check size={16} /></div>}{player.isCzar && <div className="whistle-indicator"><Whistle size={28} color="#FFD700" /></div>}</div>
-            <div className={`player-nametag ${isMe ? 'me' : ''}`}>{player.username}{gameState === 'PLAYING' && !player.isCzar && !player.hasPlayed && player.playedCardsTemp?.length > 0 && (<span style={{marginLeft: 5, color: '#fcd34d', fontSize: '0.8em'}}>({player.playedCardsTemp.length}..)</span>)}</div>
+            <div className={`avatar-frame ${isMe ? 'me' : ''} ${player.isCzar ? 'czar-frame' : ''}`}>
+                <img src={player.avatar || AVATARS[0]} alt="avatar" />
+                {player.hasPlayed && gameState === 'PLAYING' && <div className="ready-indicator"><Check size={16} /></div>}
+                {player.isCzar && <div className="whistle-indicator"><Whistle size={28} color="#FFD700" /></div>}
+            </div>
+            <div className={`player-nametag ${isMe ? 'me' : ''}`}>
+                {player.username}
+                {gameState === 'PLAYING' && !player.isCzar && !player.hasPlayed && player.playedCardsTemp?.length > 0 && (
+                    <span style={{marginLeft: 5, color: '#fcd34d', fontSize: '0.8em'}}>({player.playedCardsTemp.length}..)</span>
+                )}
+            </div>
           </motion.div>
         );
       })}
@@ -193,26 +204,31 @@ const GameTable = ({ players, myUsername, tableCards, gameState, onPickWinner, o
                 return (
                     <motion.div 
                         key={index}
-                        initial={{ scale: 0, y: 50 }}
-                        animate={{ scale: 1, y: 0 }}
-                        className={`card-group-container ${gameState === 'JUDGING' && amICzar ? 'czar-selectable' : ''}`}
+                        initial={{ scale: 0, y: -100, opacity: 0 }}
+                        animate={{ scale: 1, y: 0, opacity: 1 }}
+                        className={`card-group-container ${gameState === 'JUDGING' && amICzar ? 'czar-selectable' : ''} ${isRevealed ? 'revealed-group' : ''}`}
                         onClick={() => {
                             if (gameState === 'JUDGING' && amICzar) {
                                 if (!isRevealed) {
+                                    // Kartı aç
                                     playSoundFunc('card'); 
                                     onRevealCard(index); 
                                 } else {
-                                    playSoundFunc('pop');
-                                    onPickWinner(index);
+                                    // DÜZELTME: Kart açık ama HEPSİ açık mı?
+                                    if (allCardsRevealed) {
+                                        playSoundFunc('pop');
+                                        onPickWinner(index);
+                                    } else {
+                                        alert("Adil ol! Önce masadaki TÜM kartları açmalısın.");
+                                    }
                                 }
                             }
                         }}
                     >
-                        {(isRevealed ? cards : ["HIDDEN"]).map((cardText, i) => (
+                        {cards.map((cardText, i) => (
                             <div 
                                 key={i}
                                 className={`played-card-mini ${isRevealed ? 'revealed' : 'hidden'}`}
-                                style={{ marginTop: i > 0 ? '-60px' : '0', marginLeft: i > 0 ? '10px' : '0', zIndex: i }}
                             >
                                 <div className="card-back"></div>
                                 <div className="card-front">
@@ -245,7 +261,7 @@ const ScoreBoard = ({ players, currentRound, maxScore }) => {
                             <span style={{color: i === 0 ? '#fcd34d' : '#94a3b8', fontWeight: 'bold'}}>{i + 1}.</span>
                             <span className="score-name">{p.username}</span>
                             {p.isCzar && <Whistle size={16} color="#FFD700" />}
-                            {p.isAdmin && <Crown size={14} color="red" fill="red" style={{marginLeft: 5}} />}
+                            {p.isAdmin && <Crown size={14} color="gold" fill="gold" style={{marginLeft: 5}} />}
                             {p.isBot && <Bot size={14} color="#60a5fa" style={{marginLeft: 5}} />}
                         </div>
                         <span className="score-points">{p.score || 0} P</span>
@@ -256,12 +272,10 @@ const ScoreBoard = ({ players, currentRound, maxScore }) => {
     );
 };
 
-// --- OYUN SONU EKRANI (ADMİNE LOBİYE DÖN BUTONU) ---
 const GameOverScreen = ({ players, isAdmin, onReturnToLobby }) => {
     const winner = [...players].sort((a, b) => b.score - a.score)[0];
     useEffect(() => { playSound('win'); }, []);
     
-    // Normal oyuncu için çıkış/tekrar yükle
     const handleLogout = () => {
         localStorage.removeItem('game_session');
         window.location.reload(); 
@@ -279,7 +293,6 @@ const GameOverScreen = ({ players, isAdmin, onReturnToLobby }) => {
                     <div className="winner-score">{winner.score} Puan</div>
                 </div>
                 
-                {/* ADMİNSE LOBİYE DÖN, DEĞİLSE BEKLE */}
                 {isAdmin ? (
                     <button onClick={onReturnToLobby} className="action-btn btn-primary" style={{marginTop: 30}}>
                         LOBİYE DÖN (YENİ OYUN)
@@ -289,7 +302,6 @@ const GameOverScreen = ({ players, isAdmin, onReturnToLobby }) => {
                         Adminin lobiye dönmesi bekleniyor...
                     </div>
                 )}
-
                 <button onClick={handleLogout} className="exit-btn" style={{position:'relative', bottom: 'auto', right: 'auto', marginTop: 20}}>
                     ÇIKIŞ YAP
                 </button>
@@ -352,7 +364,7 @@ function App() {
     });
     socket.on("table_update", (cards) => setTableCards(cards));
     socket.on("kicked", () => { alert("Odadan atıldınız!"); localStorage.removeItem('game_session'); window.location.reload(); });
-  }, [socket, isJoined, soundEnabled]);
+  }, [isJoined, soundEnabled]); 
 
   const joinRoom = () => {
     if (username && room && password) {
@@ -385,15 +397,14 @@ function App() {
     <div className="scene-container">
       <div className="spotlight"></div>
       
-      {/* ÜST KONTROLLER */}
       <div className="top-controls">
+          {gameState === 'PLAYING' && <TimerDisplay timerEnd={timerEnd} soundEnabled={soundEnabled} />}
           {isJoined && (<div className={`icon-btn ${!isAdmin ? 'disabled-icon' : ''}`} onClick={handleSettingsClick} title="Oyun Ayarları"><Settings size={24} /></div>)}
           <div className="icon-btn" onClick={() => setSoundEnabled(!soundEnabled)}>{soundEnabled ? <Volume2 size={24} /> : <VolumeX size={24} />}</div>
       </div>
 
-      {showSettings && (<SettingsModal onClose={() => setShowSettings(false)} room={room} userList={userList} currentMaxScore={maxScore} currentDuration={30000} />)}
+      {showSettings && (<SettingsModal onClose={() => setShowSettings(false)} room={room} userList={userList} currentMaxScore={maxScore} currentDuration={30000} myUsername={username} />)}
 
-      {/* --- OYUN SONU EKRANI GÜNCEL --- */}
       {gameState === 'GAME_OVER' ? (
           <GameOverScreen 
               players={userList} 
@@ -410,41 +421,44 @@ function App() {
             </div>
         ) : (
             <div className="game-layout">
-                {gameState === 'PLAYING' && (<div style={{position: 'absolute', top: 20, left: '50%', transform: 'translateX(-50%)', zIndex: 100}}><TimerDisplay timerEnd={timerEnd} soundEnabled={soundEnabled} /></div>)}
                 <div className="room-info"><h2>Oda: {room}</h2><span><Users size={14}/> {userList.length}</span></div>
                 
-                {/* LOBİ BUTONLARI */}
                 {gameState === 'LOBBY' && isAdmin && (
                     <div style={{
-                        position: 'absolute', 
-                        top: '50%', 
-                        left: '50%', 
-                        transform: 'translate(-50%, -50%)', 
-                        display: 'flex', 
-                        flexDirection: 'column', 
-                        gap: 15, 
-                        zIndex: 40
+                        position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', 
+                        display: 'flex', flexDirection: 'column', gap: 15, zIndex: 40
                     }}>
-                        <button className="start-game-btn" onClick={startGame}>OYUNU BAŞLAT <Play size={16}/></button>
+                        <button className="start-game-btn" onClick={startGame} disabled={userList.length < 3} style={{ opacity: userList.length < 3 ? 0.6 : 1, cursor: userList.length < 3 ? 'not-allowed' : 'pointer' }}>
+                            OYUNU BAŞLAT {userList.length < 3 ? `(${userList.length}/3)` : ""} <Play size={16}/>
+                        </button>
                         <button className="start-game-btn" style={{background: '#3b82f6', boxShadow: '0 0 30px rgba(59, 130, 246, 0.4)'}} onClick={addBot}>BOT EKLE <Bot size={16}/></button>
                     </div>
                 )}
-                
                 {gameState === 'LOBBY' && !isAdmin && (<div className="game-status-msg">Adminin başlatması bekleniyor...</div>)}
                 {gameState === 'VOTING' && isAdmin && (<button className="finish-vote-btn" onClick={forceFinishVoting}>OYLAMAYI BİTİR <FastForward size={16}/></button>)}
-                {gameState !== 'LOBBY' && blackCard && (<div className="black-card-display"><h3>{blackCard.text}</h3>{blackCard.pick > 1 && <span className="pick-badge">PICK {blackCard.pick}</span>}</div>)}
                 
+                {gameState !== 'LOBBY' && blackCard && (
+                    <div className="black-card-display">
+                        <h3>{blackCard.text}</h3>
+                        {blackCard.pick > 1 && <span className="pick-badge">PICK {blackCard.pick}</span>}
+                    </div>
+                )}
+                
+                {/* HAKEM BEKLEME EKRANI */}
+                {gameState === 'PLAYING' && amICzar && (
+                    <div className="czar-waiting-overlay">
+                        <Whistle size={80} color="#FFD700" />
+                        <h1>YARGIÇ SENSİN!</h1>
+                        <p>Oyuncuların kart seçmesini bekle...</p>
+                        <p style={{fontSize: '0.9rem', color: '#94a3b8', marginTop: 10}}>(En komik kartı sen seçeceksin)</p>
+                    </div>
+                )}
+
                 <div className="table-container">
                     <GameTable 
-                        players={userList} 
-                        myUsername={username} 
-                        tableCards={tableCards} 
-                        gameState={gameState} 
-                        onPickWinner={pickWinner} 
-                        amICzar={amICzar} 
-                        mySocketId={socket.id} 
-                        playSoundFunc={safePlaySound}
-                        onRevealCard={revealCard} 
+                        players={userList} myUsername={username} tableCards={tableCards} gameState={gameState} 
+                        onPickWinner={pickWinner} amICzar={amICzar} mySocketId={socket.id} 
+                        playSoundFunc={safePlaySound} onRevealCard={revealCard} 
                     />
                 </div>
 
@@ -453,6 +467,13 @@ function App() {
                 {gameState === 'PLAYING' && !amICzar && (
                     <div className="hand-wrapper">
                         {!iHavePlayed && (<button className="draw-card-btn" onClick={drawCard} disabled={myDrawRights <= 0}><Plus size={16} /> Kart Çek ({myDrawRights})</button>)}
+                        
+                        {pickCount > 1 && !iHavePlayed && (
+                            <div className="pick-instruction">
+                                {myTempCards.length === 0 ? `Bu tur ${pickCount} kart seçmelisin!` : `${myTempCards.length}. kart seçildi, ${pickCount - myTempCards.length} tane daha seç!`}
+                            </div>
+                        )}
+
                         <div className="my-hand-container">
                             {myHand.map((card, i) => (
                                 <motion.div 
@@ -468,12 +489,12 @@ function App() {
                     </div>
                 )}
                 
-                {gameState === 'LOBBY' && userList.length < 3 && <div className="game-status-msg">En az 3 kişi bekleniyor...</div>}
-                {gameState === 'PLAYING' && amICzar && <div className="game-status-msg" style={{color: '#fcd34d'}}>HAKEMSİN! Oyuncuların kart atmasını bekle...</div>}
-                {gameState === 'PLAYING' && !amICzar && !iHavePlayed && (<div className="game-status-msg">{pickCount > 1 ? `Bu tur ${pickCount} kart seçmelisin! (${myTempCards.length}/${pickCount})` : "En komik kartı seç ve at!"}</div>)}
+                {gameState === 'LOBBY' && userList.length < 3 && !isAdmin && <div className="game-status-msg">En az 3 kişi bekleniyor...</div>}
+                {gameState === 'PLAYING' && !amICzar && !iHavePlayed && pickCount === 1 && (<div className="game-status-msg">En komik kartı seç ve at!</div>)}
                 {gameState === 'JUDGING' && amICzar && <div className="game-status-msg" style={{color: '#4ade80'}}>KARTLARA TIKLA VE AÇ! Sonra kazananı seç.</div>}
                 {gameState === 'JUDGING' && !amICzar && <div className="game-status-msg">Hakem kartları inceliyor...</div>}
                 {gameState === 'RESULT' && <div className="game-status-msg" style={{color: '#fcd34d'}}>Sonuçlar Açıklanıyor!</div>}
+                
                 <button onClick={() => { localStorage.removeItem('game_session'); window.location.reload(); }} className="exit-btn">ÇIKIŞ YAP</button>
             </div>
         )
