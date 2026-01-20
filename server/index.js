@@ -465,6 +465,20 @@ io.on('connection', (socket) => {
           io.to(room).emit("user_list", game.players.map(p => ({...p, isAdmin: p.id === game.admin}))); 
       }
   });
+  // --- ODAYI TAMAMEN SİLME (Admin Çıkınca) ---
+  socket.on("destroy_room", (room) => {
+    const game = rooms[room];
+    // Güvenlik: Sadece admin silebilir
+    if (game && game.admin === socket.id) {
+        console.log(`🧨 ODA İMHA EDİLDİ: ${room}`);
+        
+        // Odadaki diğer herkese "Oda kapandı" mesajı yolla ki onlar da menüye dönsün
+        io.to(room).emit("kicked"); 
+        
+        // Odayı hafızadan sil
+        delete rooms[room];
+    }
+});
 
   socket.on("disconnect", () => { 
       const player = Object.values(rooms).flatMap(r => r.players).find(p => p.id === socket.id); 

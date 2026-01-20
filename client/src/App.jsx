@@ -5,9 +5,11 @@ import Confetti from 'react-confetti';
 import { Users, Trophy, Play, Plus, Check, FastForward, Clock, Volume2, VolumeX, Settings, X, Trash2, Crown, Bot } from 'lucide-react';
 import './App.css';
 
-// ⚠️ CANLIYA GEÇERKEN BURAYI DEĞİŞTİR:
- const SERVER_URL = "https://kart-oyunu-sunucu.onrender.com";
-//const SERVER_URL = "http://localhost:3001";
+// ⚠️ CANLIYA GEÇERKEN BURAYI AYARLA:
+// Localhost'ta çalışıyorsan local, değilse Render linkine bağlanır.
+const SERVER_URL = window.location.hostname === "localhost" 
+  ? "http://localhost:3001" 
+  : "https://kart-oyunu-sunucu.onrender.com"; // BURAYA KENDİ RENDER LİNKİNİ YAZMAYI UNUTMA
 
 const socket = io(SERVER_URL, {
   transports: ["websocket"],
@@ -158,10 +160,9 @@ const TimerDisplay = ({ timerEnd, soundEnabled }) => {
     );
 };
 
+// --- OYUN MASASI ---
 const GameTable = ({ players, myUsername, tableCards, gameState, onPickWinner, onRevealCard, amICzar, mySocketId, playSoundFunc }) => {
   const TABLE_SIZE = 600; const RADIUS = 240; const CENTER = TABLE_SIZE / 2;
-
-  // DÜZELTME: Tüm kartların açık olup olmadığını kontrol et
   const allCardsRevealed = tableCards.length > 0 && tableCards.every(group => group.revealed);
 
   return (
@@ -210,11 +211,9 @@ const GameTable = ({ players, myUsername, tableCards, gameState, onPickWinner, o
                         onClick={() => {
                             if (gameState === 'JUDGING' && amICzar) {
                                 if (!isRevealed) {
-                                    // Kartı aç
                                     playSoundFunc('card'); 
                                     onRevealCard(index); 
                                 } else {
-                                    // DÜZELTME: Kart açık ama HEPSİ açık mı?
                                     if (allCardsRevealed) {
                                         playSoundFunc('pop');
                                         onPickWinner(index);
@@ -226,14 +225,9 @@ const GameTable = ({ players, myUsername, tableCards, gameState, onPickWinner, o
                         }}
                     >
                         {cards.map((cardText, i) => (
-                            <div 
-                                key={i}
-                                className={`played-card-mini ${isRevealed ? 'revealed' : 'hidden'}`}
-                            >
+                            <div key={i} className={`played-card-mini ${isRevealed ? 'revealed' : 'hidden'}`}>
                                 <div className="card-back"></div>
-                                <div className="card-front">
-                                    <span style={{ fontSize: getFontSize(cardText) }}>{cardText}</span>
-                                </div>
+                                <div className="card-front"><span style={{ fontSize: getFontSize(cardText) }}>{cardText}</span></div>
                             </div>
                         ))}
                         {group.ownerId === mySocketId && gameState === 'JUDGING' && <div className="owner-badge">Senin</div>}
@@ -246,6 +240,7 @@ const GameTable = ({ players, myUsername, tableCards, gameState, onPickWinner, o
   );
 };
 
+// --- SKOR TABLOSU ---
 const ScoreBoard = ({ players, currentRound, maxScore }) => {
     const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
     return (
@@ -272,14 +267,10 @@ const ScoreBoard = ({ players, currentRound, maxScore }) => {
     );
 };
 
-const GameOverScreen = ({ players, isAdmin, onReturnToLobby }) => {
+// --- OYUN SONU EKRANI (GÜNCELLENDİ) ---
+const GameOverScreen = ({ players, isAdmin, onReturnToLobby, onExit }) => {
     const winner = [...players].sort((a, b) => b.score - a.score)[0];
     useEffect(() => { playSound('win'); }, []);
-    
-    const handleLogout = () => {
-        localStorage.removeItem('game_session');
-        window.location.reload(); 
-    };
 
     return (
         <div className="game-over-overlay"><Confetti />
@@ -302,7 +293,8 @@ const GameOverScreen = ({ players, isAdmin, onReturnToLobby }) => {
                         Adminin lobiye dönmesi bekleniyor...
                     </div>
                 )}
-                <button onClick={handleLogout} className="exit-btn" style={{position:'relative', bottom: 'auto', right: 'auto', marginTop: 20}}>
+                {/* Buraya handleExit (onExit) fonksiyonunu bağladık */}
+                <button onClick={onExit} className="exit-btn" style={{position:'relative', bottom: 'auto', right: 'auto', marginTop: 20}}>
                     ÇIKIŞ YAP
                 </button>
             </motion.div>
@@ -310,6 +302,7 @@ const GameOverScreen = ({ players, isAdmin, onReturnToLobby }) => {
     );
 };
 
+// --- ANA UYGULAMA (APP) ---
 function App() {
   const [username, setUsername] = useState("");
   const [room, setRoom] = useState("");
@@ -363,7 +356,11 @@ function App() {
         setMyHand(hand);
     });
     socket.on("table_update", (cards) => setTableCards(cards));
-    socket.on("kicked", () => { alert("Odadan atıldınız!"); localStorage.removeItem('game_session'); window.location.reload(); });
+    socket.on("kicked", () => { 
+        alert("Odadan atıldınız veya oda kapatıldı!"); 
+        localStorage.removeItem('game_session'); 
+        window.location.reload(); 
+    });
   }, [isJoined, soundEnabled]); 
 
   const joinRoom = () => {
@@ -374,7 +371,22 @@ function App() {
     } else { alert("Lütfen tüm alanları doldurun!"); }
   };
 
-  const handleSettingsClick = () => { const myPlayer = userList.find(p => p.username === username); if (myPlayer?.isAdmin) { setShowSettings(true); } else { alert("Sadece oda yöneticisi (Admin) ayarları değiştirebilir!"); } };
+  const myPlayer = userList.find(p => p.username === username);
+  const isAdmin = myPlayer?.isAdmin;
+
+  // --- ODAYI PATLATAN VE ÇIKIŞ YAPAN ÖZEL FONKSİYON ---
+  const handleExit = () => {
+      // Eğer Adminsem, çıkarken odayı da patlat
+      if (isAdmin) {
+          socket.emit("destroy_room", room);
+      }
+      
+      // Standart çıkış işlemleri
+      localStorage.removeItem('game_session');
+      window.location.reload();
+  };
+
+  const handleSettingsClick = () => { if (isAdmin) { setShowSettings(true); } else { alert("Sadece oda yöneticisi (Admin) ayarları değiştirebilir!"); } };
   const startGame = () => socket.emit("start_game", room);
   const addBot = () => socket.emit("add_bot", room); 
   const playCard = (cardText) => { safePlaySound('card'); socket.emit("play_card", { room, cardText }); };
@@ -385,8 +397,6 @@ function App() {
   const handleUsernameChange = (e) => { if(e.target.value.length <= 15) setUsername(e.target.value); };
   const handlePasswordChange = (e) => { const val = e.target.value.replace(/\D/g, ''); if(val.length <= 5) setPassword(val); };
 
-  const myPlayer = userList.find(p => p.username === username);
-  const isAdmin = myPlayer?.isAdmin;
   const myDrawRights = myPlayer ? myPlayer.drawRights : 0;
   const iHavePlayed = myPlayer ? myPlayer.hasPlayed : false;
   const amICzar = (czarId === socket.id);
@@ -410,12 +420,13 @@ function App() {
               players={userList} 
               isAdmin={isAdmin} 
               onReturnToLobby={() => socket.emit("return_to_lobby", room)} 
+              onExit={handleExit} // Yeni çıkış fonksiyonunu gönderdik
           />
       ) : (!isJoined ? (
             <div className="login-screen">
             <h1 className="login-title">CARDS AGAINST HUMANITY</h1>
             <div className="input-group"><label>Avatarını Seç</label><div className="avatar-grid">{AVATARS.map((img, index) => (<div key={index} className={`avatar-option ${avatar === img ? "selected" : ""}`} onClick={() => setAvatar(img)}><img src={img} alt="avatar" /></div>))}</div></div>
-            <div className="input-group"><label>Oyuncu Adın</label><input type="text" value={username} onChange={handleUsernameChange} placeholder="Örn: KomikÇocuk" /></div>
+            <div className="input-group"><label>Oyuncu Adın</label><input type="text" value={username} onKeyDown={(e) => e.key === 'Enter' && joinRoom()} onChange={handleUsernameChange} placeholder="Örn: KomikÇocuk" /></div>
             <div className="split-inputs"><div className="input-group"><label>Oda No</label><input type="text" onChange={e => setRoom(e.target.value)} /></div><div className="input-group"><label>Şifre</label><input type="text" value={password} onChange={handlePasswordChange} placeholder="12345" /></div></div>
             <button onClick={joinRoom} className="action-btn btn-primary">MASAYA OTUR</button>
             </div>
@@ -444,7 +455,6 @@ function App() {
                     </div>
                 )}
                 
-                {/* HAKEM BEKLEME EKRANI */}
                 {gameState === 'PLAYING' && amICzar && (
                     <div className="czar-waiting-overlay">
                         <Whistle size={80} color="#FFD700" />
@@ -495,7 +505,8 @@ function App() {
                 {gameState === 'JUDGING' && !amICzar && <div className="game-status-msg">Hakem kartları inceliyor...</div>}
                 {gameState === 'RESULT' && <div className="game-status-msg" style={{color: '#fcd34d'}}>Sonuçlar Açıklanıyor!</div>}
                 
-                <button onClick={() => { localStorage.removeItem('game_session'); window.location.reload(); }} className="exit-btn">ÇIKIŞ YAP</button>
+                {/* BURADA handleExit FONKSİYONUNU KULLANDIK */}
+                <button onClick={handleExit} className="exit-btn">ÇIKIŞ YAP</button>
             </div>
         )
       )}
