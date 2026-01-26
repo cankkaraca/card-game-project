@@ -178,129 +178,200 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
     .start-game-btn, .finish-vote-btn { padding: 10px 30px; font-size: 1rem; }
 
     /* =========================================
-           MOBİL İÇİN FİNAL DÜZENLEMELER 
+       MOBİL İÇİN FİNAL EDİLMİŞ DÜZEN
    ========================================= */
 
 @media (max-width: 768px) {
 
-  /* 1. SAHNEYİ SIKIŞTIR VE KAYMAYI ÖNLE */
+  /* 1. ANA SAHNE DÜZENİ */
   .scene-container {
       flex-direction: column;
-      justify-content: flex-start;
-      padding-top: 50px;
+      justify-content: flex-start; /* Yukarıdan başla */
+      padding-top: 0; /* Üst boşluğu sıfırla, elemanlarla vereceğiz */
       overflow: hidden;
-      height: 100vh; /* Tam ekran zorla */
+      height: 100vh;
+      position: relative;
   }
 
-  /* 2. ODA BİLGİSİ */
+  /* 2. ÜST BİLGİ ÇUBUĞU (Oda & Sayaç & Skor) */
+  /* Bunları tek bir hizada, çakışmadan tutalım */
+  
+  /* Oda Bilgisi (Sol Üst) */
   .room-info {
       top: 10px; left: 10px;
-      padding: 5px 12px;
-      font-size: 0.8rem;
-      z-index: 40;
+      padding: 5px 10px;
+      font-size: 0.75rem;
+      z-index: 50;
+      background: rgba(0,0,0,0.6); /* Daha belirgin olsun */
   }
 
-  /* 3. MASAYI MOBİLE GÖRE KÜÇÜLT */
-  .table-wrapper {
-      transform: scale(0.55); /* İyice küçült */
-      margin-top: -50px; /* Yukarı al */
-      width: 100vw;
-      height: auto;
-      aspect-ratio: 1/1;
-      pointer-events: none; /* Masanın boş yerleri tıklamayı engellemesin */
+  /* Sayaç (Orta Üst - Skorla çakışmasın diye biraz aşağıda) */
+  .timer-badge {
+      top: 10px !important; /* En tepeye */
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      padding: 5px 15px;
+      font-size: 0.85rem;
+      z-index: 60; /* Skorun üstünde */
+      border-width: 2px;
   }
-  /* Masanın içindeki butonlara izin ver */
+
+  /* Skor Tablosu (Sağ Üst - Küçültüldü ve sabitlendi) */
+  .scoreboard {
+      top: 10px; right: 10px;
+      width: 110px; /* Sabit genişlik */
+      max-height: 40vh; /* Çok uzamasın */
+      font-size: 0.7rem;
+      padding: 8px;
+      transform: none;
+      z-index: 50;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.9);
+  }
+  .scoreboard-header { font-size: 0.75rem; padding-bottom: 5px; margin-bottom: 5px; }
+  .score-item { padding: 3px 0; }
+  .score-points { padding: 1px 5px; font-size: 0.7rem; }
+
+  /* 3. SİYAH KART (Üsttekilerin altına, masanın üstüne) */
+  .black-card-display {
+      top: 80px; /* Üstteki elemanlardan kurtar */
+      width: 90%;
+      padding: 12px;
+      font-size: 0.85rem;
+      z-index: 40;
+      border-radius: 15px;
+      background: rgba(26, 26, 26, 0.95);
+  }
+  .black-card-display h3 { margin: 5px 0; font-size: 0.95rem; }
+  .pick-badge { font-size: 0.75rem; padding: 4px 10px; }
+
+  /* 4. MASA (Ortala ve Küçült) */
+  .table-wrapper {
+      transform: scale(0.52); /* Biraz daha küçült */
+      /* Dikey ortalama için kritik ayar: */
+      position: absolute;
+      top: 48%; 
+      left: 50%;
+      margin: 0; /* Marginleri sıfırla */
+      /* transform zaten scale için kullanılıyor, ortaya çekmek için translate ekle */
+      transform: translate(-50%, -50%) scale(0.52);
+      
+      width: auto;
+      height: auto;
+      pointer-events: none;
+      z-index: 10; /* En altta */
+  }
+  /* Masadaki tıklanabilir alanları aç */
   .played-cards-grid, .avatar-frame { pointer-events: auto; }
 
-  /* 4. SİYAH KART (Üstte dursun) */
-  .black-card-display {
-      top: 12%;
-      width: 90%;
-      padding: 10px;
-      font-size: 0.9rem;
-      z-index: 50;
-  }
-  .black-card-display h3 { margin: 5px 0; font-size: 1rem; }
-
-  /* 5. ELİMİZDEKİ KARTLAR (EN ÖNEMLİ KISIM) */
+  /* 5. ELİMİZDEKİ KARTLAR (En altta, en üst katmanda) */
   .hand-wrapper {
-      bottom: 20px; /* iPhone Home bar için boşluk */
+      bottom: 10px; /* Alttan boşluk */
       width: 100%;
-      height: auto;
-      z-index: 9999; /* HER ŞEYİN ÜSTÜNDE OLSUN */
-      pointer-events: none; /* Wrapper tıklamayı engellemesin */
+      z-index: 1000; /* Masanın ve her şeyin üstünde */
+      pointer-events: none;
   }
 
   .my-hand-container {
-      pointer-events: auto; /* Kartlara tıklanabilsin */
-      padding-bottom: 20px;
-      padding-left: 20px;
-      padding-right: 20px;
-      gap: 0px; /* Mobilde kartlar birbirine girmesin */
-      overflow-x: auto; /* Yana kaydırma */
+      pointer-events: auto;
+      padding: 10px 15px 20px 15px;
+      gap: 8px; /* Kartlar arası net boşluk */
+      overflow-x: auto;
       justify-content: flex-start;
       width: 100vw;
-      -webkit-overflow-scrolling: touch; /* iPhone'da akıcı kaydırma */
+      -webkit-overflow-scrolling: touch;
   }
 
   .hand-card {
-      min-width: 95px; /* Kart genişliği sabit */
-      height: 140px;
-      font-size: 0.8rem;
-      margin-right: 10px !important; /* Kartlar arası boşluk olsun */
-      margin-left: 0 !important;
-      transform: none !important; /* PC'deki dönüşleri iptal et */
-      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      min-width: 90px;
+      height: 135px;
+      font-size: 0.75rem;
+      margin: 0 !important; /* Negatif marginleri sıfırla */
+      transform: none !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      border-radius: 10px;
   }
   
-  /* MOBİLDE SEÇİLME EFEKTİ (Basınca hissettir) */
   .hand-card:active {
-      background-color: #fcd34d !important; /* Sarı yanar */
-      transform: scale(0.95) !important; /* Hafif içe göçer */
+      background-color: #fcd34d !important;
+      transform: scale(0.96) !important;
       transition: 0.1s;
   }
 
-  /* Kart Çekme Butonu */
+  /* Kart Çekme Butonu & Pick Uyarısı */
   .draw-card-btn {
       pointer-events: auto;
-      margin-bottom: 10px;
-      padding: 10px 20px;
-      z-index: 10000;
+      margin-bottom: 5px;
+      padding: 8px 16px;
+      font-size: 0.8rem;
+  }
+  .pick-instruction {
+      font-size: 0.8rem;
+      padding: 6px 15px;
+      margin-bottom: 5px;
   }
 
-  /* 6. DİĞER KÜÇÜK AYARLAR */
-  .scoreboard {
-      top: 60px; right: 10px;
-      width: auto; max-width: 120px;
-      font-size: 0.7rem;
-      padding: 5px;
-  }
-  .scoreboard-header { font-size: 0.8rem; }
-  
-  .timer-badge {
-      top: 15px !important;
-      left: 50%;
-      padding: 5px 12px;
-      font-size: 0.9rem;
-      z-index: 100;
-  }
-
+  /* 6. DİĞER BUTONLAR VE KONTROLLER */
   .exit-btn {
-      top: 10px; right: 10px; bottom: auto;
-      padding: 6px 12px; font-size: 0.75rem;
-      z-index: 60;
+      top: auto; bottom: 20px; /* Aşağı al */
+      right: 20px;
+      padding: 8px 15px; font-size: 0.8rem;
+      z-index: 2000; /* Kartların da üstünde */
+      background: rgba(239, 68, 68, 0.9);
   }
   
   .top-controls {
-      bottom: 20px; left: 10px; top: auto; right: auto;
+      bottom: 20px; left: 20px; top: auto; right: auto;
       flex-direction: column-reverse;
-      z-index: 60;
+      gap: 8px;
+      z-index: 2000;
+  }
+  .icon-btn { padding: 8px; }
+
+  .start-game-btn, .finish-vote-btn {
+      padding: 12px 24px;
+      font-size: 1rem;
+      width: 85%;
+      z-index: 100; /* Masanın üstünde */
   }
 
-  /* Hakem Ekranı Mobilde Dev Gibi Olmasın */
+  /* 7. YARGIÇ BEKLEME EKRANI (Tam Ortala) */
   .czar-waiting-overlay {
       width: 85%;
-      padding: 20px;
+      max-width: 320px;
+      padding: 25px;
+      z-index: 5000; /* Her şeyin üstünde */
+      background: rgba(0, 0, 0, 0.85);
+      border: 2px solid var(--spotlight);
+  }
+  .czar-waiting-overlay h1 { font-size: 1.6rem; margin: 10px 0; }
+  .czar-waiting-overlay p { font-size: 1rem; }
+
+  /* 8. OYUN SONU EKRANI (Ortala ve Ferahlat) */
+  .game-over-box {
+      width: 90%;
+      padding: 30px 20px;
+      max-height: 85vh;
+      overflow-y: auto;
+  }
+  .game-over-box h1 { font-size: 2.5rem; }
+  .winner-display img { width: 100px; height: 100px; }
+  .winner-display h2 { font-size: 2rem; }
+  .winner-score { font-size: 1.2rem; padding: 6px 20px; }
+  
+  /* Durum Mesajları (Lobi vs.) */
+  .game-status-msg {
+      bottom: 180px; /* Kartların üstüne */
+      font-size: 0.9rem;
+      padding: 10px 20px;
+      width: 85%;
   }
 }
+
+/* Çok Küçük Ekranlar İçin (iPhone SE gibi) */
+@media (max-height: 650px) and (max-width: 768px) {
+  .table-wrapper { transform: translate(-50%, -50%) scale(0.45); }
+  .black-card-display { top: 70px; font-size: 0.8rem; padding: 10px; }
+  .hand-card { height: 120px; min-width: 85px; font-size: 0.7rem; }
+  .scoreboard { max-height: 30vh; }
 }
