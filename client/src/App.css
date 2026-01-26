@@ -134,11 +134,19 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
 .card-group-container.revealed-group .played-card-mini:nth-child(2) { margin-top: 10px; margin-left: 0; }
 .owner-badge { position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%); background: #333; color: white; font-size: 10px; padding: 4px 8px; border-radius: 5px; white-space: nowrap; font-weight: bold; }
 
-/* WATERMARK & STATUS */
-.table-wrapper::after { content: "CARDS AGAINST HUMANITY"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-10deg); font-size: 2.5rem; font-weight: 900; color: rgba(255, 255, 255, 0.05); white-space: nowrap; pointer-events: none; font-family: 'Montserrat', sans-serif; z-index: 0; }
+/* DİĞER ELEMANLAR */
+.timer-badge { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(15, 23, 42, 0.9); padding: 10px 25px; border-radius: 30px; border: 2px solid; display: flex; align-items: center; gap: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 5000; backdrop-filter: blur(5px); }
+.pick-instruction { background: #f59e0b; color: white; padding: 8px 20px; border-radius: 20px; font-weight: bold; margin-bottom: 10px; box-shadow: 0 0 15px rgba(245, 158, 11, 0.6); animation: bounce 1s infinite; }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+.czar-waiting-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 100; background: rgba(0, 0, 0, 0.6); padding: 40px; border-radius: 30px; backdrop-filter: blur(4px); border: 2px solid rgba(255, 215, 0, 0.3); width: 300px; }
+.czar-waiting-overlay h1 { color: #FFD700; margin: 15px 0; font-size: 2rem; text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+.czar-waiting-overlay p { color: white; font-size: 1.1rem; }
 .game-status-msg { position: absolute; bottom: 270px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); padding: 12px 30px; border-radius: 30px; font-size: 1rem; color: #fff; pointer-events: none; width: auto; text-align: center; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-weight: 600; }
 .exit-btn { position: absolute; bottom: 30px; right: 30px; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; padding: 10px 30px; border-radius: 12px; cursor: pointer; transition: 0.3s; z-index: 100; font-weight: bold; }
 .exit-btn:hover { background: #ef4444; color: white; }
+
+/* WATERMARK */
+.table-wrapper::after { content: "CARDS AGAINST HUMANITY"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-10deg); font-size: 2.5rem; font-weight: 900; color: rgba(255, 255, 255, 0.05); white-space: nowrap; pointer-events: none; font-family: 'Montserrat', sans-serif; z-index: 0; }
 
 /* GAME OVER */
 .game-over-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95); display: flex; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(15px); }
@@ -152,14 +160,6 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
 .winner-display h2 { font-size: 2.5rem; margin: 20px 0 10px 0; color: white; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
 .winner-score { background: #10b981; color: #fff; display: inline-block; padding: 8px 30px; border-radius: 30px; font-weight: 800; font-size: 1.5rem; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.5); letter-spacing: 1px; }
 
-/* DİĞER ELEMANLAR */
-.timer-badge { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(15, 23, 42, 0.9); padding: 10px 25px; border-radius: 30px; border: 2px solid; display: flex; align-items: center; gap: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 5000; backdrop-filter: blur(5px); }
-.pick-instruction { background: #f59e0b; color: white; padding: 8px 20px; border-radius: 20px; font-weight: bold; margin-bottom: 10px; box-shadow: 0 0 15px rgba(245, 158, 11, 0.6); animation: bounce 1s infinite; }
-@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-.czar-waiting-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 100; background: rgba(0, 0, 0, 0.6); padding: 40px; border-radius: 30px; backdrop-filter: blur(4px); border: 2px solid rgba(255, 215, 0, 0.3); width: 300px; }
-.czar-waiting-overlay h1 { color: #FFD700; margin: 15px 0; font-size: 2rem; text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-.czar-waiting-overlay p { color: white; font-size: 1.1rem; }
-
 /* =========================================
    MOBİL İÇİN FİNAL TAMİR EDİLMİŞ DÜZEN
    ========================================= */
@@ -169,8 +169,8 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
     /* 1. ANA SAHNE DÜZENİ */
     .scene-container {
         flex-direction: column;
-        justify-content: flex-start; /* Yukarıdan başla */
-        padding-top: 0; /* Üst boşluğu sıfırla, elemanlarla vereceğiz */
+        justify-content: flex-start; 
+        padding-top: 0;
         overflow: hidden;
         height: 100vh;
         position: relative;
@@ -185,52 +185,56 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
         background: rgba(0,0,0,0.6);
     }
 
+    /* SAYAÇ ORTADA */
     .timer-badge {
         top: 10px !important;
         left: 50% !important;
         transform: translateX(-50%) !important;
-        padding: 5px 15px;
-        font-size: 0.85rem;
+        padding: 4px 12px;
+        font-size: 0.8rem;
         z-index: 60; 
         border-width: 2px;
     }
 
+    /* SKOR TABLOSU SAĞ ÜSTTE KÜÇÜK */
     .scoreboard {
         top: 10px; right: 10px;
-        width: 110px;
+        width: 100px; /* Daha dar */
         max-height: 40vh;
-        font-size: 0.7rem;
-        padding: 8px;
+        font-size: 0.65rem;
+        padding: 6px;
         transform: none;
         z-index: 50;
         border-radius: 12px;
         background: rgba(15, 23, 42, 0.9);
     }
-    .scoreboard-header { font-size: 0.75rem; padding-bottom: 5px; margin-bottom: 5px; }
-    .score-item { padding: 3px 0; }
-    .score-points { padding: 1px 5px; font-size: 0.7rem; }
+    .scoreboard-header { font-size: 0.7rem; padding-bottom: 5px; margin-bottom: 5px; }
+    .score-item { padding: 2px 0; }
+    .score-points { padding: 1px 4px; font-size: 0.65rem; }
 
-    /* 3. SİYAH KART */
+    /* 3. SİYAH KART (SORU) */
     .black-card-display {
-        top: 80px;
+        top: 60px; /* Sayaçtan aşağıda */
         width: 90%;
-        padding: 12px;
-        font-size: 0.85rem;
+        padding: 10px;
+        font-size: 0.8rem;
         z-index: 40;
-        border-radius: 15px;
+        border-radius: 12px;
         background: rgba(26, 26, 26, 0.95);
+        max-height: 25vh; /* Çok uzamasın */
+        overflow-y: auto;
     }
-    .black-card-display h3 { margin: 5px 0; font-size: 0.95rem; }
-    .pick-badge { font-size: 0.75rem; padding: 4px 10px; }
+    .black-card-display h3 { margin: 5px 0; font-size: 0.9rem; }
+    .pick-badge { font-size: 0.7rem; padding: 3px 8px; }
 
-    /* 4. MASA */
+    /* 4. MASA (ORTADA) */
     .table-wrapper {
-        transform: scale(0.52);
+        transform: scale(0.5); /* Mobilde masayı küçült */
         position: absolute;
-        top: 48%; 
+        top: 55%; /* Biraz aşağıda */
         left: 50%;
         margin: 0;
-        transform: translate(-50%, -50%) scale(0.52);
+        transform: translate(-50%, -50%) scale(0.5);
         width: auto;
         height: auto;
         pointer-events: none;
@@ -238,9 +242,9 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
     }
     .played-cards-grid, .avatar-frame { pointer-events: auto; }
 
-    /* 5. ELİMİZDEKİ KARTLAR */
+    /* 5. ELİMİZDEKİ KARTLAR (EN ALTTA, KÜÇÜK) */
     .hand-wrapper {
-        bottom: 10px;
+        bottom: 5px; /* En alta yapışık */
         width: 100%;
         z-index: 1000;
         pointer-events: none;
@@ -248,7 +252,7 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
 
     .my-hand-container {
         pointer-events: auto;
-        padding: 10px 15px 20px 15px;
+        padding: 5px 10px 15px 10px;
         gap: 8px;
         overflow-x: auto;
         justify-content: flex-start;
@@ -256,14 +260,16 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
         -webkit-overflow-scrolling: touch;
     }
 
+    /* KART BOYUTLARI KÜÇÜLTÜLDÜ */
     .hand-card {
-        min-width: 90px;
-        height: 135px;
-        font-size: 0.75rem;
+        min-width: 80px; /* Daha dar */
+        height: 120px; /* Daha kısa */
+        font-size: 0.65rem; /* Yazı küçük */
         margin: 0 !important;
         transform: none !important;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        border-radius: 8px;
+        padding: 5px;
     }
     
     .hand-card:active {
@@ -275,75 +281,76 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
     .draw-card-btn {
         pointer-events: auto;
         margin-bottom: 5px;
-        padding: 8px 16px;
-        font-size: 0.8rem;
+        padding: 6px 12px;
+        font-size: 0.75rem;
     }
     .pick-instruction {
-        font-size: 0.8rem;
-        padding: 6px 15px;
+        font-size: 0.75rem;
+        padding: 5px 12px;
         margin-bottom: 5px;
     }
 
     /* 6. BUTONLAR */
     .exit-btn {
-        top: auto; bottom: 20px;
-        right: 20px;
-        padding: 8px 15px; font-size: 0.8rem;
+        top: auto; bottom: 80px; /* Kontrollerin üstünde */
+        right: 10px;
+        padding: 6px 12px; font-size: 0.7rem;
         z-index: 2000;
         background: rgba(239, 68, 68, 0.9);
     }
     
     .top-controls {
-        bottom: 20px; left: 20px; top: auto; right: auto;
+        bottom: 80px; left: 10px; top: auto; right: auto;
         flex-direction: column-reverse;
         gap: 8px;
         z-index: 2000;
     }
-    .icon-btn { padding: 8px; }
+    .icon-btn { padding: 6px; }
 
     .start-game-btn, .finish-vote-btn {
-        padding: 12px 24px;
-        font-size: 1rem;
-        width: 85%;
+        padding: 10px 20px;
+        font-size: 0.9rem;
+        width: 80%;
         z-index: 100;
     }
 
     /* 7. YARGIÇ EKRANI */
     .czar-waiting-overlay {
-        width: 85%;
-        max-width: 320px;
-        padding: 25px;
+        width: 80%;
+        max-width: 300px;
+        padding: 20px;
         z-index: 5000;
         background: rgba(0, 0, 0, 0.85);
         border: 2px solid var(--spotlight);
     }
-    .czar-waiting-overlay h1 { font-size: 1.6rem; margin: 10px 0; }
-    .czar-waiting-overlay p { font-size: 1rem; }
+    .czar-waiting-overlay h1 { font-size: 1.4rem; margin: 8px 0; }
+    .czar-waiting-overlay p { font-size: 0.9rem; }
 
     /* 8. OYUN SONU */
     .game-over-box {
         width: 90%;
-        padding: 30px 20px;
-        max-height: 85vh;
+        padding: 20px 15px;
+        max-height: 80vh;
         overflow-y: auto;
     }
-    .game-over-box h1 { font-size: 2.5rem; }
-    .winner-display img { width: 100px; height: 100px; }
-    .winner-display h2 { font-size: 2rem; }
-    .winner-score { font-size: 1.2rem; padding: 6px 20px; }
+    .game-over-box h1 { font-size: 2rem; }
+    .winner-display img { width: 80px; height: 80px; }
+    .winner-display h2 { font-size: 1.6rem; }
+    .winner-score { font-size: 1rem; padding: 4px 15px; }
     
     .game-status-msg {
-        bottom: 180px;
-        font-size: 0.9rem;
-        padding: 10px 20px;
-        width: 85%;
+        bottom: 160px;
+        font-size: 0.8rem;
+        padding: 8px 15px;
+        width: 80%;
     }
 }
 
-/* Küçük Ekranlar */
+/* ÇOK KÜÇÜK EKRANLAR */
 @media (max-height: 650px) and (max-width: 768px) {
-    .table-wrapper { transform: translate(-50%, -50%) scale(0.45); }
-    .black-card-display { top: 70px; font-size: 0.8rem; padding: 10px; }
-    .hand-card { height: 120px; min-width: 85px; font-size: 0.7rem; }
-    .scoreboard { max-height: 30vh; }
+    .table-wrapper { transform: translate(-50%, -50%) scale(0.4); top: 52%; }
+    .black-card-display { top: 55px; font-size: 0.75rem; padding: 8px; max-height: 20vh; }
+    .hand-card { height: 100px; min-width: 70px; font-size: 0.6rem; }
+    .scoreboard { max-height: 25vh; width: 90px; }
+    .timer-badge { top: 5px !important; }
 }
