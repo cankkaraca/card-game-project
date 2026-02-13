@@ -31,7 +31,7 @@ body {
 
 .scene-container { width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; }
 
-/* --- KONTROLLER --- */
+/* --- KONTROLLER (SES/AYARLAR) --- */
 .top-controls { position: absolute; top: 20px; right: 20px; display: flex; gap: 10px; z-index: 5000; }
 .icon-btn { background: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 50%; cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); color: white; display: flex; align-items: center; justify-content: center; }
 .icon-btn:hover { background: white; color: black; transform: scale(1.1); }
@@ -65,7 +65,7 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
 .avatar-option.selected { border-color: var(--spotlight); opacity: 1; transform: scale(1.15); box-shadow: 0 0 15px var(--spotlight); }
 .avatar-option img { width: 100%; height: 100%; display: block; }
 
-/* --- OYUN ALANI (GENEL) --- */
+/* --- OYUN ALANI --- */
 .game-layout { width: 100%; height: 100%; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
 .room-info { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); padding: 10px 25px; border-radius: 50px; z-index: 50; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 15px; }
 .room-info h2 { font-size: 1.2rem; margin: 0; color: var(--spotlight); }
@@ -77,7 +77,7 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
 .finish-vote-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #f59e0b; color: white; border: none; padding: 15px 50px; border-radius: 50px; cursor: pointer; font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; box-shadow: 0 0 30px rgba(245, 158, 11, 0.4); z-index: 200; transition: all 0.2s; text-transform: uppercase; }
 .finish-vote-btn:hover { transform: translate(-50%, -50%) scale(1.1); }
 
-/* --- SİYAH KART --- */
+/* --- SİYAH KART (PC) --- */
 .black-card-display { position: absolute; top: 5%; left: 50%; transform: translateX(-50%); background: #1a1a1a; color: white; padding: 20px 40px; border-radius: 20px; border: 1px solid #333; max-width: 600px; width: 80%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.8); z-index: 40; font-size: 1.2rem; font-weight: 600; font-family: 'Montserrat', sans-serif; display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .pick-badge { background: var(--accent); color: white; font-size: 0.9rem; font-weight: 800; padding: 6px 15px; border-radius: 20px; box-shadow: 0 0 20px var(--accent); animation: pulse 2s infinite; }
 @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
@@ -155,7 +155,7 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
 .winner-score { background: #10b981; color: #fff; display: inline-block; padding: 8px 30px; border-radius: 30px; font-weight: 800; font-size: 1.5rem; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.5); letter-spacing: 1px; }
 
 /* ========================================================= */
-/* MOBİL İÇİN FİNAL DÜZENLEME                  */
+/* MOBİL İÇİN FİNAL DÜZENLEME (HATASIZ VE YERLEŞİK)          */
 /* ========================================================= */
 
 @media (max-width: 768px) {
@@ -170,13 +170,13 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
         position: relative;
     }
 
-    /* 2. ÜST BİLGİ & SKOR */
+    /* 2. ÜST BİLGİ & SAYAÇ */
     .room-info {
         top: 5px; left: 5px;
         padding: 4px 8px;
         font-size: 0.7rem;
         z-index: 50;
-        background: rgba(0,0,0,0.7);
+        background: rgba(0,0,0,0.6);
     }
 
     .timer-badge {
@@ -189,78 +189,81 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
         border-width: 1px;
     }
 
-    /* Skor Tablosu (Gizle/Küçült - Çok yer kaplıyor) */
+    /* Skor Tablosu (Küçültüldü) */
     .scoreboard {
         top: 5px; right: 5px;
-        width: auto;
-        padding: 4px 8px;
-        background: rgba(15, 23, 42, 0.95);
-        max-height: 100px; /* Sadece ilk 2-3 kişiyi göster */
-        overflow: hidden; /* Taşanı gizle */
+        width: 100px;
+        max-height: 120px;
+        font-size: 0.65rem;
+        padding: 6px;
+        transform: none;
         z-index: 50;
+        border-radius: 12px;
+        background: rgba(15, 23, 42, 0.9);
     }
-    .scoreboard-header { display: none; /* Başlığı gizle yer aç */ }
-    .score-item { padding: 1px 0; font-size: 0.65rem; }
-    .score-points { font-size: 0.65rem; padding: 1px 4px; }
+    .scoreboard-header { font-size: 0.7rem; padding-bottom: 5px; margin-bottom: 5px; }
+    .score-item { padding: 2px 0; }
+    .score-points { padding: 1px 4px; font-size: 0.65rem; }
 
-    /* 3. SİYAH KART (SORU) */
+    /* 3. SİYAH KART (SORU) - YERİ DÜZELTİLDİ */
     .black-card-display {
-        top: 45px; /* Skorun hemen altına */
-        width: 92%;
-        padding: 8px 15px;
-        font-size: 0.8rem; /* Yazıyı küçült */
+        top: 60px; /* Sayaçtan aşağıda */
+        width: 90%;
+        padding: 10px 15px;
+        font-size: 0.85rem;
         z-index: 40;
         border-radius: 12px;
-        background: rgba(26, 26, 26, 0.95);
+        background: rgba(20, 20, 20, 0.95); /* Daha koyu arka plan */
         max-height: 20vh;
         overflow-y: auto;
     }
-    .black-card-display h3 { margin: 2px 0; line-height: 1.3; font-size: 0.85rem; }
-    .pick-badge { font-size: 0.6rem; padding: 2px 6px; }
+    .black-card-display h3 { margin: 2px 0; line-height: 1.3; font-size: 0.9rem; }
+    .pick-badge { font-size: 0.65rem; padding: 2px 6px; }
 
-    /* 4. MASA (ORTAYA VE ARKAYA) */
+    /* 4. MASA (ORTADA) */
     .table-wrapper {
-        transform: scale(0.45); /* Masayı iyice küçült */
+        transform: scale(0.45); /* Masayı küçülttük */
         position: absolute;
-        top: 50%; /* Ekranın ortasında */
+        top: 45%; /* Soru ile kartlar arasında */
         left: 50%;
         margin: 0;
         transform: translate(-50%, -50%) scale(0.45);
         width: auto; height: auto;
         pointer-events: none;
-        z-index: 10; /* En altta kalsın */
+        z-index: 10;
     }
     .played-cards-grid, .avatar-frame { pointer-events: auto; }
 
-    /* 5. ELİMİZDEKİ KARTLAR (EN ALT, SIKIŞIK DEĞİL) */
+    /* 5. ELİMİZDEKİ KARTLAR (EN ALTTA, SIKIŞIK DEĞİL) */
     .hand-wrapper {
         bottom: 0; /* En alta yapıştır */
         width: 100%;
         height: auto;
         z-index: 1000;
         pointer-events: none;
-        background: linear-gradient(to top, rgba(15,23,42,1) 0%, rgba(15,23,42,0) 100%); /* Okunabilirlik için gölge */
+        background: linear-gradient(to top, rgba(15,23,42,1) 0%, rgba(15,23,42,0) 100%);
     }
 
     .my-hand-container {
         pointer-events: auto;
-        padding: 10px 10px 20px 10px;
+        padding: 5px 10px 20px 10px;
         gap: 8px; /* Kartlar arası boşluk */
         overflow-x: auto; /* Yana kaydır */
-        justify-content: flex-start; /* Soldan başla */
+        justify-content: flex-start;
         width: 100vw;
         -webkit-overflow-scrolling: touch;
     }
 
+    /* KART BOYUTLARI KÜÇÜLTÜLDÜ */
     .hand-card {
-        min-width: 80px; /* Kart genişliği ideal */
-        height: 120px; /* Kart yüksekliği ideal */
-        font-size: 0.65rem;
-        margin: 0 !important; /* PC'deki negatif margin iptal */
+        min-width: 85px; /* İdeal genişlik */
+        height: 125px; /* İdeal yükseklik */
+        font-size: 0.7rem; /* Yazı okunur */
+        margin: 0 !important;
         transform: none !important;
         box-shadow: 0 2px 5px rgba(0,0,0,0.5);
         border-radius: 8px;
-        flex-shrink: 0; /* Küçülmesin */
+        flex-shrink: 0;
     }
     
     .hand-card:active {
@@ -268,11 +271,12 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
         transform: scale(0.95) !important;
     }
 
+    /* Kart Çekme Butonu - Yukarı alındı */
     .draw-card-btn {
         pointer-events: auto;
-        margin-bottom: 5px;
-        padding: 6px 12px;
-        font-size: 0.75rem;
+        margin-bottom: 10px; /* Kartlardan uzaklaş */
+        padding: 8px 16px;
+        font-size: 0.8rem;
     }
     .pick-instruction {
         font-size: 0.75rem;
@@ -280,22 +284,24 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
         margin-bottom: 5px;
     }
 
-    /* 6. BUTONLAR */
+    /* 6. ÇIKIŞ VE KONTROL BUTONLARI */
     .exit-btn {
-        top: auto; bottom: 160px; /* Kartların üstüne, sağa */
+        top: auto; 
+        bottom: 200px; /* Kartların ve butonun üstünde sağda */
         right: 10px;
-        padding: 6px 10px; font-size: 0.65rem;
+        padding: 6px 12px; font-size: 0.7rem;
         z-index: 2000;
-        background: rgba(239, 68, 68, 0.8);
+        background: rgba(239, 68, 68, 0.9);
+        color: white !important; /* YAZI RENGİ BEYAZ */
     }
     
     .top-controls {
-        bottom: 160px; left: 10px; top: auto; right: auto;
+        bottom: 200px; left: 10px; top: auto; right: auto;
         flex-direction: column-reverse;
         gap: 5px;
         z-index: 2000;
     }
-    .icon-btn { padding: 6px; width: 30px; height: 30px; }
+    .icon-btn { padding: 6px; width: 32px; height: 32px; }
 
     .start-game-btn, .finish-vote-btn {
         padding: 10px 20px;
@@ -306,7 +312,7 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
 
     /* 7. YARGIÇ EKRANI */
     .czar-waiting-overlay {
-        width: 85%;
+        width: 80%;
         max-width: 300px;
         padding: 20px;
         z-index: 5000;
@@ -318,7 +324,7 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
 
     /* 8. DURUM MESAJI */
     .game-status-msg {
-        bottom: 180px; /* Kartların ve butonların üstünde */
+        bottom: 190px;
         font-size: 0.8rem;
         padding: 8px 15px;
         width: 80%;
@@ -328,8 +334,9 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
 
 /* ÇOK KÜÇÜK EKRANLAR (iPhone SE gibi) */
 @media (max-height: 650px) and (max-width: 768px) {
-    .table-wrapper { transform: translate(-50%, -50%) scale(0.35); } /* Masayı daha da küçült */
-    .black-card-display { top: 40px; font-size: 0.7rem; }
-    .hand-card { height: 100px; min-width: 70px; font-size: 0.6rem; }
-    .scoreboard { display: none; /* Çok küçükse skoru gizle */ }
+    .table-wrapper { transform: translate(-50%, -50%) scale(0.38); top: 48%; }
+    .black-card-display { top: 50px; font-size: 0.75rem; padding: 8px; max-height: 18vh; }
+    .hand-card { height: 110px; min-width: 75px; font-size: 0.65rem; }
+    .scoreboard { display: none; } /* Yer yoksa skoru gizle */
+    .timer-badge { top: 5px !important; }
 }
