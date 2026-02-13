@@ -31,13 +31,13 @@ body {
 
 .scene-container { width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; }
 
-/* KONTROLLER */
+/* --- KONTROLLER --- */
 .top-controls { position: absolute; top: 20px; right: 20px; display: flex; gap: 10px; z-index: 5000; }
 .icon-btn { background: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 50%; cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); color: white; display: flex; align-items: center; justify-content: center; }
 .icon-btn:hover { background: white; color: black; transform: scale(1.1); }
 .disabled-icon { opacity: 0.5; cursor: not-allowed; }
 
-/* MODAL */
+/* --- MODAL --- */
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
 .modal-box { background: #1e293b; border: 2px solid var(--spotlight); padding: 25px; border-radius: 20px; max-width: 400px; width: 90%; box-shadow: 0 0 50px rgba(0,0,0,0.5); position: relative; z-index: 3001; }
 .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
@@ -50,7 +50,7 @@ body {
 .manage-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
 .kick-btn { background: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 5px; font-size: 0.7rem; cursor: pointer; display: flex; align-items: center; gap: 5px; }
 
-/* LOGIN */
+/* --- LOGIN --- */
 .login-screen { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 40px; border-radius: 30px; text-align: center; z-index: 50; max-width: 450px; width: 90%; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
 .login-title { font-family: 'Montserrat', sans-serif; font-size: 3rem; margin-bottom: 20px; background: linear-gradient(to bottom, #fff, #FFD700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5)); }
 .input-group label { font-size: 0.8rem; color: #cbd5e1; margin-bottom: 8px; display: block; font-weight: 600; }
@@ -65,30 +65,24 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
 .avatar-option.selected { border-color: var(--spotlight); opacity: 1; transform: scale(1.15); box-shadow: 0 0 15px var(--spotlight); }
 .avatar-option img { width: 100%; height: 100%; display: block; }
 
-/* OYUN ALANI */
+/* --- OYUN ALANI (GENEL) --- */
 .game-layout { width: 100%; height: 100%; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
 .room-info { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); padding: 10px 25px; border-radius: 50px; z-index: 50; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 15px; }
 .room-info h2 { font-size: 1.2rem; margin: 0; color: var(--spotlight); }
 
-/* BUTONLAR */
-.start-game-btn { 
-    background: #10b981; color: white; border: none; padding: 15px 50px; border-radius: 50px; cursor: pointer; font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; box-shadow: 0 0 30px rgba(16, 185, 129, 0.4); transition: all 0.2s; text-transform: uppercase; white-space: nowrap; z-index: 200; 
-}
+/* --- BUTONLAR --- */
+.start-game-btn { background: #10b981; color: white; border: none; padding: 15px 50px; border-radius: 50px; cursor: pointer; font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; box-shadow: 0 0 30px rgba(16, 185, 129, 0.4); transition: all 0.2s; text-transform: uppercase; white-space: nowrap; z-index: 200; }
 .start-game-btn:hover { transform: scale(1.05); box-shadow: 0 0 50px rgba(16, 185, 129, 0.8); }
 .start-game-btn:disabled { opacity: 0.6; cursor: not-allowed; filter: grayscale(1); }
-.finish-vote-btn { 
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #f59e0b; color: white; border: none; padding: 15px 50px; border-radius: 50px; cursor: pointer; font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; box-shadow: 0 0 30px rgba(245, 158, 11, 0.4); z-index: 200; transition: all 0.2s; text-transform: uppercase;
-}
+.finish-vote-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #f59e0b; color: white; border: none; padding: 15px 50px; border-radius: 50px; cursor: pointer; font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; box-shadow: 0 0 30px rgba(245, 158, 11, 0.4); z-index: 200; transition: all 0.2s; text-transform: uppercase; }
 .finish-vote-btn:hover { transform: translate(-50%, -50%) scale(1.1); }
 
-/* SİYAH KART */
-.black-card-display { 
-    position: absolute; top: 5%; left: 50%; transform: translateX(-50%); background: #1a1a1a; color: white; padding: 20px 40px; border-radius: 20px; border: 1px solid #333; max-width: 600px; width: 80%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.8); z-index: 40; font-size: 1.2rem; font-weight: 600; font-family: 'Montserrat', sans-serif; display: flex; flex-direction: column; align-items: center; gap: 10px; 
-}
+/* --- SİYAH KART --- */
+.black-card-display { position: absolute; top: 5%; left: 50%; transform: translateX(-50%); background: #1a1a1a; color: white; padding: 20px 40px; border-radius: 20px; border: 1px solid #333; max-width: 600px; width: 80%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.8); z-index: 40; font-size: 1.2rem; font-weight: 600; font-family: 'Montserrat', sans-serif; display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .pick-badge { background: var(--accent); color: white; font-size: 0.9rem; font-weight: 800; padding: 6px 15px; border-radius: 20px; box-shadow: 0 0 20px var(--accent); animation: pulse 2s infinite; }
 @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
-/* MASA */
+/* --- MASA --- */
 .table-wrapper { position: relative; width: 600px; height: 600px; display: flex; justify-content: center; align-items: center; transition: transform 0.3s; margin-top: 20px; z-index: 10; }
 .player-seat { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; transition: all 0.5s ease; }
 .avatar-frame { width: 70px; height: 70px; border-radius: 50%; border: 4px solid #334155; background: #0f172a; overflow: visible; box-shadow: 0 10px 20px rgba(0,0,0,0.5); z-index: 10; position: relative; transition: 0.3s; }
@@ -101,13 +95,13 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
 .player-nametag { margin-top: -15px; background: #1e293b; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; border: 2px solid #334155; z-index: 11; position: relative; display: flex; align-items: center; box-shadow: 0 5px 10px rgba(0,0,0,0.3); white-space: nowrap; }
 .me .player-nametag { border-color: var(--spotlight); color: var(--spotlight); }
 
-/* SKOR TABLOSU */
+/* --- SKOR TABLOSU --- */
 .scoreboard { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); width: 220px; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(10px); border-radius: 20px; padding: 20px; border: 1px solid rgba(255,255,255,0.1); z-index: 50; max-height: 60vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
 .scoreboard-header { display: flex; align-items: center; justify-content: space-between; color: var(--spotlight); border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 15px; margin-bottom: 15px; font-weight: 800; letter-spacing: 1px; }
 .score-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.95rem; align-items: center; }
 .score-points { font-weight: bold; color: #10b981; background: rgba(16, 185, 129, 0.1); padding: 2px 8px; border-radius: 10px; }
 
-/* ELDEKİ KARTLAR */
+/* --- ELDEKİ KARTLAR (PC) --- */
 .hand-wrapper { position: absolute; bottom: 20px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 15px; z-index: 100; pointer-events: none; }
 .draw-card-btn { background: #3b82f6; color: white; border: none; padding: 10px 25px; border-radius: 30px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; pointer-events: auto; box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4); transition: 0.2s; }
 .draw-card-btn:hover { transform: translateY(-3px); }
@@ -117,7 +111,7 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
 .hand-card:hover { transform: translateY(-50px) rotate(0deg) scale(1.2) !important; z-index: 1000; box-shadow: 0 20px 50px rgba(0,0,0,0.6); margin-right: 20px; margin-left: 20px;}
 .hand-card.disabled { opacity: 0.6; cursor: not-allowed; background: #94a3b8; transform: translateY(20px) !important; filter: grayscale(1); }
 
-/* ORTA KARTLAR (FLIP & MASA) */
+/* --- ORTA KARTLAR --- */
 .table-center-area { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 300px; display: flex; justify-content: center; align-items: center; z-index: 50; pointer-events: none; }
 .played-cards-grid { display: flex; gap: 15px; pointer-events: auto; flex-wrap: wrap; justify-content: center; align-items: center; }
 .card-group-container { display: flex; flex-direction: column; align-items: center; cursor: default; transition: transform 0.2s; position: relative; }
@@ -134,7 +128,7 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
 .card-group-container.revealed-group .played-card-mini:nth-child(2) { margin-top: 10px; margin-left: 0; }
 .owner-badge { position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%); background: #333; color: white; font-size: 10px; padding: 4px 8px; border-radius: 5px; white-space: nowrap; font-weight: bold; }
 
-/* DİĞER ELEMANLAR */
+/* --- DİĞER ELEMANLAR --- */
 .timer-badge { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(15, 23, 42, 0.9); padding: 10px 25px; border-radius: 30px; border: 2px solid; display: flex; align-items: center; gap: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 5000; backdrop-filter: blur(5px); }
 .pick-instruction { background: #f59e0b; color: white; padding: 8px 20px; border-radius: 20px; font-weight: bold; margin-bottom: 10px; box-shadow: 0 0 15px rgba(245, 158, 11, 0.6); animation: bounce 1s infinite; }
 @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
@@ -148,7 +142,7 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
 /* WATERMARK */
 .table-wrapper::after { content: "CARDS AGAINST HUMANITY"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-10deg); font-size: 2.5rem; font-weight: 900; color: rgba(255, 255, 255, 0.05); white-space: nowrap; pointer-events: none; font-family: 'Montserrat', sans-serif; z-index: 0; }
 
-/* GAME OVER */
+/* --- GAME OVER --- */
 .game-over-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95); display: flex; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(15px); }
 .game-over-box { background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05)); border: 1px solid rgba(255,255,255,0.2); padding: 60px; border-radius: 40px; text-align: center; box-shadow: 0 0 100px rgba(255, 215, 0, 0.2), 0 20px 60px rgba(0,0,0,0.5); max-width: 500px; width: 90%; position: relative; overflow: hidden; }
 .game-over-box::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, rgba(255, 215, 0, 0.3), transparent 30%); animation: rotate 4s linear infinite; z-index: -1; }
@@ -160,122 +154,118 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
 .winner-display h2 { font-size: 2.5rem; margin: 20px 0 10px 0; color: white; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
 .winner-score { background: #10b981; color: #fff; display: inline-block; padding: 8px 30px; border-radius: 30px; font-weight: 800; font-size: 1.5rem; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.5); letter-spacing: 1px; }
 
-/* =========================================
-   MOBİL İÇİN FİNAL TAMİR EDİLMİŞ DÜZEN
-   ========================================= */
+/* ========================================================= */
+/* MOBİL İÇİN FİNAL DÜZENLEME                  */
+/* ========================================================= */
 
 @media (max-width: 768px) {
 
-    /* 1. ANA SAHNE DÜZENİ */
+    /* 1. SAHNE DÜZENİ */
     .scene-container {
         flex-direction: column;
-        justify-content: flex-start; 
+        justify-content: flex-start; /* Yukarı yasla */
         padding-top: 0;
         overflow: hidden;
-        height: 100vh;
+        height: 100vh; /* Tam ekran yap */
         position: relative;
     }
 
-    /* 2. ÜST BİLGİ ÇUBUĞU */
+    /* 2. ÜST BİLGİ & SKOR */
     .room-info {
-        top: 10px; left: 10px;
-        padding: 5px 10px;
-        font-size: 0.75rem;
+        top: 5px; left: 5px;
+        padding: 4px 8px;
+        font-size: 0.7rem;
         z-index: 50;
-        background: rgba(0,0,0,0.6);
+        background: rgba(0,0,0,0.7);
     }
 
-    /* SAYAÇ ORTADA */
     .timer-badge {
-        top: 10px !important;
+        top: 5px !important;
         left: 50% !important;
         transform: translateX(-50%) !important;
-        padding: 4px 12px;
+        padding: 3px 10px;
         font-size: 0.8rem;
         z-index: 60; 
-        border-width: 2px;
+        border-width: 1px;
     }
 
-    /* SKOR TABLOSU SAĞ ÜSTTE KÜÇÜK */
+    /* Skor Tablosu (Gizle/Küçült - Çok yer kaplıyor) */
     .scoreboard {
-        top: 10px; right: 10px;
-        width: 100px; /* Daha dar */
-        max-height: 40vh;
-        font-size: 0.65rem;
-        padding: 6px;
-        transform: none;
+        top: 5px; right: 5px;
+        width: auto;
+        padding: 4px 8px;
+        background: rgba(15, 23, 42, 0.95);
+        max-height: 100px; /* Sadece ilk 2-3 kişiyi göster */
+        overflow: hidden; /* Taşanı gizle */
         z-index: 50;
-        border-radius: 12px;
-        background: rgba(15, 23, 42, 0.9);
     }
-    .scoreboard-header { font-size: 0.7rem; padding-bottom: 5px; margin-bottom: 5px; }
-    .score-item { padding: 2px 0; }
-    .score-points { padding: 1px 4px; font-size: 0.65rem; }
+    .scoreboard-header { display: none; /* Başlığı gizle yer aç */ }
+    .score-item { padding: 1px 0; font-size: 0.65rem; }
+    .score-points { font-size: 0.65rem; padding: 1px 4px; }
 
     /* 3. SİYAH KART (SORU) */
     .black-card-display {
-        top: 60px; /* Sayaçtan aşağıda */
-        width: 90%;
-        padding: 10px;
-        font-size: 0.8rem;
+        top: 45px; /* Skorun hemen altına */
+        width: 92%;
+        padding: 8px 15px;
+        font-size: 0.8rem; /* Yazıyı küçült */
         z-index: 40;
         border-radius: 12px;
         background: rgba(26, 26, 26, 0.95);
-        max-height: 25vh; /* Çok uzamasın */
+        max-height: 20vh;
         overflow-y: auto;
     }
-    .black-card-display h3 { margin: 5px 0; font-size: 0.9rem; }
-    .pick-badge { font-size: 0.7rem; padding: 3px 8px; }
+    .black-card-display h3 { margin: 2px 0; line-height: 1.3; font-size: 0.85rem; }
+    .pick-badge { font-size: 0.6rem; padding: 2px 6px; }
 
-    /* 4. MASA (ORTADA) */
+    /* 4. MASA (ORTAYA VE ARKAYA) */
     .table-wrapper {
-        transform: scale(0.5); /* Mobilde masayı küçült */
+        transform: scale(0.45); /* Masayı iyice küçült */
         position: absolute;
-        top: 55%; /* Biraz aşağıda */
+        top: 50%; /* Ekranın ortasında */
         left: 50%;
         margin: 0;
-        transform: translate(-50%, -50%) scale(0.5);
-        width: auto;
-        height: auto;
+        transform: translate(-50%, -50%) scale(0.45);
+        width: auto; height: auto;
         pointer-events: none;
-        z-index: 10;
+        z-index: 10; /* En altta kalsın */
     }
     .played-cards-grid, .avatar-frame { pointer-events: auto; }
 
-    /* 5. ELİMİZDEKİ KARTLAR (EN ALTTA, KÜÇÜK) */
+    /* 5. ELİMİZDEKİ KARTLAR (EN ALT, SIKIŞIK DEĞİL) */
     .hand-wrapper {
-        bottom: 5px; /* En alta yapışık */
+        bottom: 0; /* En alta yapıştır */
         width: 100%;
+        height: auto;
         z-index: 1000;
         pointer-events: none;
+        background: linear-gradient(to top, rgba(15,23,42,1) 0%, rgba(15,23,42,0) 100%); /* Okunabilirlik için gölge */
     }
 
     .my-hand-container {
         pointer-events: auto;
-        padding: 5px 10px 15px 10px;
-        gap: 8px;
-        overflow-x: auto;
-        justify-content: flex-start;
+        padding: 10px 10px 20px 10px;
+        gap: 8px; /* Kartlar arası boşluk */
+        overflow-x: auto; /* Yana kaydır */
+        justify-content: flex-start; /* Soldan başla */
         width: 100vw;
         -webkit-overflow-scrolling: touch;
     }
 
-    /* KART BOYUTLARI KÜÇÜLTÜLDÜ */
     .hand-card {
-        min-width: 80px; /* Daha dar */
-        height: 120px; /* Daha kısa */
-        font-size: 0.65rem; /* Yazı küçük */
-        margin: 0 !important;
+        min-width: 80px; /* Kart genişliği ideal */
+        height: 120px; /* Kart yüksekliği ideal */
+        font-size: 0.65rem;
+        margin: 0 !important; /* PC'deki negatif margin iptal */
         transform: none !important;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.5);
         border-radius: 8px;
-        padding: 5px;
+        flex-shrink: 0; /* Küçülmesin */
     }
     
     .hand-card:active {
         background-color: #fcd34d !important;
-        transform: scale(0.96) !important;
-        transition: 0.1s;
+        transform: scale(0.95) !important;
     }
 
     .draw-card-btn {
@@ -286,26 +276,26 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
     }
     .pick-instruction {
         font-size: 0.75rem;
-        padding: 5px 12px;
+        padding: 4px 10px;
         margin-bottom: 5px;
     }
 
     /* 6. BUTONLAR */
     .exit-btn {
-        top: auto; bottom: 80px; /* Kontrollerin üstünde */
+        top: auto; bottom: 160px; /* Kartların üstüne, sağa */
         right: 10px;
-        padding: 6px 12px; font-size: 0.7rem;
+        padding: 6px 10px; font-size: 0.65rem;
         z-index: 2000;
-        background: rgba(239, 68, 68, 0.9);
+        background: rgba(239, 68, 68, 0.8);
     }
     
     .top-controls {
-        bottom: 80px; left: 10px; top: auto; right: auto;
+        bottom: 160px; left: 10px; top: auto; right: auto;
         flex-direction: column-reverse;
-        gap: 8px;
+        gap: 5px;
         z-index: 2000;
     }
-    .icon-btn { padding: 6px; }
+    .icon-btn { padding: 6px; width: 30px; height: 30px; }
 
     .start-game-btn, .finish-vote-btn {
         padding: 10px 20px;
@@ -316,41 +306,30 @@ input:focus { outline: none; border-color: var(--spotlight); background: rgba(0,
 
     /* 7. YARGIÇ EKRANI */
     .czar-waiting-overlay {
-        width: 80%;
+        width: 85%;
         max-width: 300px;
         padding: 20px;
         z-index: 5000;
-        background: rgba(0, 0, 0, 0.85);
+        background: rgba(0, 0, 0, 0.9);
         border: 2px solid var(--spotlight);
     }
     .czar-waiting-overlay h1 { font-size: 1.4rem; margin: 8px 0; }
     .czar-waiting-overlay p { font-size: 0.9rem; }
 
-    /* 8. OYUN SONU */
-    .game-over-box {
-        width: 90%;
-        padding: 20px 15px;
-        max-height: 80vh;
-        overflow-y: auto;
-    }
-    .game-over-box h1 { font-size: 2rem; }
-    .winner-display img { width: 80px; height: 80px; }
-    .winner-display h2 { font-size: 1.6rem; }
-    .winner-score { font-size: 1rem; padding: 4px 15px; }
-    
+    /* 8. DURUM MESAJI */
     .game-status-msg {
-        bottom: 160px;
+        bottom: 180px; /* Kartların ve butonların üstünde */
         font-size: 0.8rem;
         padding: 8px 15px;
         width: 80%;
+        z-index: 90;
     }
 }
 
-/* ÇOK KÜÇÜK EKRANLAR */
+/* ÇOK KÜÇÜK EKRANLAR (iPhone SE gibi) */
 @media (max-height: 650px) and (max-width: 768px) {
-    .table-wrapper { transform: translate(-50%, -50%) scale(0.4); top: 52%; }
-    .black-card-display { top: 55px; font-size: 0.75rem; padding: 8px; max-height: 20vh; }
+    .table-wrapper { transform: translate(-50%, -50%) scale(0.35); } /* Masayı daha da küçült */
+    .black-card-display { top: 40px; font-size: 0.7rem; }
     .hand-card { height: 100px; min-width: 70px; font-size: 0.6rem; }
-    .scoreboard { max-height: 25vh; width: 90px; }
-    .timer-badge { top: 5px !important; }
+    .scoreboard { display: none; /* Çok küçükse skoru gizle */ }
 }
